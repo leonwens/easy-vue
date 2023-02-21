@@ -1,3 +1,4 @@
+import Watcher from './observe/watcher';
 import { createElement, createTextNode } from './vdom';
 function createRealElement(vdom) {
   const { tag, children, text, props } = vdom;
@@ -62,8 +63,8 @@ export function initLifeCycle(Vue) {
 
 export function mountComponent(vm, el) {
   vm.$el = el;
-  // 1. 调用render方法生成虚拟节点
-  // 2. 根据虚拟dom生成真实dom
-  // 3. 插入到el中
-  vm._update(vm._render());
+  const updateComponent = () => {
+    vm._update(vm._render());
+  };
+  new Watcher(vm, updateComponent, true);
 }
