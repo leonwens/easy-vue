@@ -86,5 +86,7 @@ setTimeout(() => {
      - 一个组件有 N 个属性，每个属性都有一个 dep
      - 可能不同组件之间共享同一个属性，那这时候这一个属性就会对应多个 watcher 实例
    - dep 记住这个 watcher，属性变化的时候可以找到对应的 dep 中存放的 watcher 进行重新渲染
-2. 异步更新策略(TODO)
-3. mixin 的实现原理
+2. 异步更新策略
+   - 利用 eventLoop 和队列实现一次性更新，而不是多次更新
+   - 实现 nextTick 函数，为了统一内部和使用者的执行时机，保证执行顺序（Vue 内部采用降级处理的方法实现，promise->mutationObserver->setImmediate->setTimeout）
+3. mixin 的实现原理(TODO)

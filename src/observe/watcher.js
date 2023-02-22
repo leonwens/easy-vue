@@ -22,10 +22,50 @@ class Watcher {
     this.getter();
     Dep.target = null;
   }
-  update() {
-    // 这里目前会更新多次。后续实现异步更新策略来解决这个问题
-    console.log('update');
+  run() {
     this.get();
+  }
+  update() {
+    queueWatcher(this);
+  }
+}
+let queue = [];
+let has = {};
+let pending = false;
+function flushSchedulerQueue() {
+  let flushQueue = queue.slice(0);
+  queue = [];
+  has = {};
+  pending = false;
+  flushQueue.forEach(q => q.run());
+}
+function queueWatcher(watcher) {
+  const id = watcher.id;
+  if (!has[id]) {
+    queue.push(watcher);
+    has[id] = true;
+    if (!pending) {
+      nextTick(flushSchedulerQueue);
+      pending = true;
+    }
+  }
+}
+
+let callbacks = [];
+let waiting = false;
+function flushCallbacks() {
+  let cbList = callbacks.slice(0);
+  callbacks = [];
+  waiting = false;
+  cbList.forEach(cb => cb());
+}
+export function nextTick(cb) {
+  callbacks.push(cb);
+  if (!waiting) {
+    setTimeout(() => {
+      flushCallbacks();
+    }, 0);
+    waiting = true;
   }
 }
 export default Watcher;
