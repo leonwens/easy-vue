@@ -89,4 +89,6 @@ setTimeout(() => {
 2. 异步更新策略
    - 利用 eventLoop 和队列实现一次性更新，而不是多次更新
    - 实现 nextTick 函数，为了统一内部和使用者的执行时机，保证执行顺序（Vue 内部采用降级处理的方法实现，promise->mutationObserver->setImmediate->setTimeout）
-3. mixin 的实现原理(TODO)
+3. mixin 的实现原理
+   - 提供 Vue.mixin 全局方法，让用户传入的配置和 Vue.options 进行合并
+   - 根据不同的类型提供不同的合并策略
