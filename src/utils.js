@@ -15,8 +15,8 @@ LIFECYCLE.forEach(hook => {
   };
 });
 // 还可以写其他的合并策略
-strats.data = function (p, c) {};
-strats.computed = function (p, c) {};
+// strats.data = function (p, c) {};
+// strats.computed = function (p, c) {};
 
 export function mergeOptions(parent, child) {
   const options = {};

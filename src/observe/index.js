@@ -3,6 +3,7 @@ import Dep from './dep';
 
 class Observer {
   constructor(data) {
+    this.dep = new Dep();
     Object.defineProperty(data, '__ob__', {
       value: this,
       enumerable: false
@@ -21,13 +22,28 @@ class Observer {
     data.forEach(item => observe(item));
   }
 }
+function dependArray(value) {
+  for (let i = 0; i < value.length; i++) {
+    const cur = value[i];
+    cur.__ob__ && cur.__ob__.dep.depend();
+    if (Array.isArray(cur)) {
+      dependArray(cur);
+    }
+  }
+}
 export function defineReactive(target, key, value) {
-  observe(value);
+  const childOb = observe(value);
   let dep = new Dep();
   Object.defineProperty(target, key, {
     get() {
       if (Dep.target) {
         dep.depend();
+        if (childOb) {
+          childOb.dep.depend();
+          if (Array.isArray(value)) {
+            dependArray(value);
+          }
+        }
       }
       return value;
     },
