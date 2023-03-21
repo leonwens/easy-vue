@@ -1,13 +1,24 @@
-import Dep from './dep';
+import Dep, { popStack, pushStack } from './dep';
 let id = 0;
 class Watcher {
-  constructor(vm, fn, options) {
+  constructor(vm, expOrFn, options, cb) {
     this.id = id++;
+    this.vm = vm;
+    this.cb = cb;
     this.renderWatcher = options;
-    this.getter = fn;
+    if (typeof expOrFn === 'string') {
+      this.getter = function () {
+        return vm[expOrFn];
+      };
+    } else {
+      this.getter = expOrFn;
+    }
     this.deps = [];
     this.depsId = new Set();
-    this.get();
+    this.lazy = options.lazy;
+    this.dirty = this.lazy;
+    this.user = options.user;
+    this.value = this.lazy ? undefined : this.get(); // 这个value专门记录计算属性对应的getter值
   }
   addDep(dep) {
     const id = dep.id;
@@ -17,16 +28,35 @@ class Watcher {
       dep.addSub(this);
     }
   }
+  evaluate() {
+    this.value = this.get();
+    this.dirty = false;
+  }
   get() {
-    Dep.target = this;
-    this.getter();
-    Dep.target = null;
+    pushStack(this);
+    const value = this.getter.call(this.vm);
+    popStack();
+    return value;
+  }
+  depend() {
+    let i = this.deps.length;
+    while (i--) {
+      this.deps[i].depend();
+    }
   }
   run() {
-    this.get();
+    let oldVal = this.value;
+    let newVal = this.get();
+    if (this.user) {
+      this.cb.call(this.vm, newVal, oldVal);
+    }
   }
   update() {
-    queueWatcher(this);
+    if (this.lazy) {
+      this.dirty = true;
+    } else {
+      queueWatcher(this);
+    }
   }
 }
 let queue = [];
