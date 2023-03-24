@@ -1,6 +1,5 @@
 import { compileToFunction } from './compiler';
 import { callHook, mountComponent } from './lifecycle';
-import { nextTick } from './observe/watcher';
 import { initState } from './state';
 import { mergeOptions } from './utils';
 
@@ -35,5 +34,4 @@ export function initMixin(Vue) {
     }
     mountComponent(vm, container);
   };
-  Vue.prototype.$nextTick = nextTick;
 }

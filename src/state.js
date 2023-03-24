@@ -1,6 +1,6 @@
 import Dep from './observe/dep';
 import { observe } from './observe/index';
-import Watcher from './observe/watcher';
+import Watcher, { nextTick } from './observe/watcher';
 
 export function initState(vm) {
   const opts = vm.$options;
@@ -83,5 +83,12 @@ function createComputedGetter(key) {
       watcher.depend();
     }
     return watcher.value;
+  };
+}
+
+export function initStateMixin(Vue) {
+  Vue.prototype.$nextTick = nextTick;
+  Vue.prototype.$watch = function (expOrFn, fn) {
+    new Watcher(this, expOrFn, { user: true }, fn);
   };
 }

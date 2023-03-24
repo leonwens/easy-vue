@@ -18,7 +18,7 @@ class Watcher {
     this.lazy = options.lazy;
     this.dirty = this.lazy;
     this.user = options.user;
-    this.value = this.lazy ? undefined : this.get(); // 这个value专门记录计算属性对应的getter值
+    this.value = this.lazy ? undefined : this.get(); // 这个value专门记录计算属性对应的getter值或者watcher的key值
   }
   addDep(dep) {
     const id = dep.id;
