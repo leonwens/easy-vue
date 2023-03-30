@@ -134,3 +134,10 @@ setTimeout(() => {
    - 跳出循环后
      - 新节点还有，则插入到尾部
      - 旧节点还有，删除
+
+## step6: Vue.extend 以及 Vue.component
+
+1. Vue.component
+   只是记录了对应的组件名和 definitaion, 以 key-value 的形式放到了 Vue.options.components 上
+2. Vue.extend
+   返回一个子类，并在子类上记录自己的选项

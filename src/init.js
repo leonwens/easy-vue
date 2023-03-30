@@ -19,15 +19,11 @@ export function initMixin(Vue) {
     const container = document.querySelector(id);
     const { render, template } = vm.$options;
     if (!render) {
-      let _tpl;
-      if (container) {
-        if (template) {
-          _tpl = template;
-        } else {
-          _tpl = container.outerHTML;
-        }
+      let _tpl = template;
+      if (!template && container) {
+        _tpl = container.outerHTML;
       }
-      if (_tpl && container) {
+      if (_tpl) {
         const _render = compileToFunction(_tpl);
         vm.$options.render = _render;
       }

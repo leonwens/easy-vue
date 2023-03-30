@@ -14,6 +14,15 @@ LIFECYCLE.forEach(hook => {
     }
   };
 });
+strats.components = function (parentVal, childVal) {
+  const res = Object.create(parentVal);
+  if (childVal) {
+    for (let key in childVal) {
+      res[key] = childVal[key];
+    }
+  }
+  return res;
+};
 // 还可以写其他的合并策略
 // strats.data = function (p, c) {};
 // strats.computed = function (p, c) {};

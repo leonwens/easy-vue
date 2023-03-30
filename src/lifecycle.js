@@ -1,11 +1,11 @@
 import Watcher from './observe/watcher';
-import { createElement, createTextNode } from './vdom';
+import { createElementVNode, createTextNode } from './vdom';
 import { patch } from './vdom/patch';
 
 export function initLifeCycle(Vue) {
   Vue.prototype._c = function () {
     // _c('div', props, ...children)
-    return createElement(this, ...arguments);
+    return createElementVNode(this, ...arguments);
   };
   Vue.prototype._v = function () {
     // _v(text)

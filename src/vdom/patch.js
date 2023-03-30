@@ -1,8 +1,20 @@
 import { isSameVNode } from '.';
-
+function createComponent(vnode) {
+  let i = vnode.data;
+  if ((i = i.hook) && (i = i.init)) {
+    i(vnode);
+  }
+  if (vnode.componentInstance) {
+    return true;
+  }
+}
 export function createRealElement(vdom) {
   const { tag, children, text, data } = vdom;
   if (typeof tag === 'string') {
+    if (createComponent(vdom)) {
+      return vdom.componentInstance.$el;
+    }
+
     vdom.el = document.createElement(tag);
     patchProps(vdom.el, {}, data);
     children.forEach(child => {
@@ -37,6 +49,10 @@ function patchProps(el, oldProps = {}, props = {}) {
   }
 }
 export function patch(oldVNode, vnode) {
+  if (!oldVNode) {
+    // 组件的挂载
+    return createRealElement(vnode);
+  }
   const isRealElement = oldVNode.nodeType;
   if (isRealElement) {
     // 初始化
